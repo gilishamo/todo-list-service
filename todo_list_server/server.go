@@ -1,14 +1,15 @@
 package server
 
 import (
-	_ "ToDoListService/docs/ToDoListService"
-	"ToDoListService/http_utils"
-	"ToDoListService/task"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	_ "todo-list-service/docs/ToDoListService"
+	"todo-list-service/task"
+
+	"github.com/gilishamo/go-codebase/http_utils"
 
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"

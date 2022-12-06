@@ -1,10 +1,11 @@
-module ToDoListService
+module todo-list-service
 
 go 1.19
 
-require github.com/google/uuid v1.3.0
-
-require github.com/gilishamo/go-codebase v0.0.0-20221206152739-154bacb1eda0 // indirect
+require (
+	github.com/gilishamo/go-codebase v0.0.0-20221206152739-154bacb1eda0
+	github.com/google/uuid v1.3.0
+)
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

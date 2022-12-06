@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	_ "ToDoListService/docs/ToDoListService"
-	service "ToDoListService/todo_list_server"
+	_ "todo-list-service/docs/ToDoListService"
+	service "todo-list-service/todo_list_server"
 )
 
 //	@title			Go + Echo Todo List API
