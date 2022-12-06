@@ -74,8 +74,10 @@ func (server *ToDoListServer) CreateTask(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
+	// create an id & add the task to all tasks
 	id := server.tasksHandler.CreateTask(newTask)
 
+	// notify other services to add the task
 	go server.SendAddRequestToServers(newTask, id)
 
 	log.Printf("Created a task successfully\n")
@@ -109,11 +111,13 @@ func (server *ToDoListServer) RemoveTask(c echo.Context) error {
 
 	id := c.Param("id")
 
+	// remove the task from map of tasks
 	if err := server.tasksHandler.RemoveTask(id); err != nil {
 		log.Printf("failed to remove task %v, error is: %v", id, err)
 		return c.String(http.StatusBadRequest, fmt.Sprintf("failed to remove task %v, error is: %v", id, err))
 	}
 
+	// notify other services to remove the task
 	go server.SendRemoveRequestToServers(id)
 
 	log.Printf("removed task %v successfully", id)
@@ -121,6 +125,7 @@ func (server *ToDoListServer) RemoveTask(c echo.Context) error {
 }
 
 func (server *ToDoListServer) SendAddRequestToServers(task *task.TaskData, id string) error {
+	// for each ip in server.servicesAddress, send a request to add the task with the given id
 	log.Printf("Executing SendAddRequestToServers\n")
 
 	params := map[string]string{"id": id}
@@ -130,6 +135,7 @@ func (server *ToDoListServer) SendAddRequestToServers(task *task.TaskData, id st
 }
 
 func (server *ToDoListServer) SendRemoveRequestToServers(id string) error {
+	// for each ip in server.servicesAddress, send a request to remove the task with the given id
 	log.Printf("Executing SendRemoveRequestToServers\n")
 
 	params := map[string]string{"id": id}
@@ -137,12 +143,16 @@ func (server *ToDoListServer) SendRemoveRequestToServers(id string) error {
 }
 
 func (server *ToDoListServer) SendPostRequestToServer(path string, body interface{}, params map[string]string, headers map[string]string) error {
+	// for each ip in server.servicesAddress, send a request to update the tasks (add/remove task)
+
 	c := http_utils.NewHttpClient()
 
 	for _, addr := range server.servicesAddress {
 
+		// format the url with the current ip address & the requested path (add/remove)
 		url := fmt.Sprintf("http://%s%s", addr, path)
 
+		// convert body to bytes.Reader (which implements io.Reader)
 		data, err := json.Marshal(body)
 		if err != nil {
 			log.Printf("SendPostRequestToServer, json.Marshal failed with error: %v\n", err)
@@ -158,8 +168,8 @@ func (server *ToDoListServer) SendPostRequestToServer(path string, body interfac
 
 		defer res.Body.Close()
 
+		// check the response status is 200
 		if res.StatusCode != http.StatusOK {
-			println(res.Status)
 			log.Printf("SendPostRequestToServer response status code is: %v, but expected to be: %v\n", res.StatusCode, http.StatusOK)
 			return fmt.Errorf("SendPostRequestToServer response status code is: %v, but expected to be: %v", res.StatusCode, http.StatusOK)
 		}
@@ -180,6 +190,7 @@ func (server *ToDoListServer) GetInnerAddRequest(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
+	// add task with given id
 	server.tasksHandler.AddTask(newTask, id)
 
 	return nil
@@ -190,6 +201,7 @@ func (server *ToDoListServer) GetInnerRemoveRequest(c echo.Context) error {
 
 	id := c.QueryParam("id")
 
+	// remove task with given id
 	if err := server.tasksHandler.RemoveTask(id); err != nil {
 		log.Printf("GetInnerRemoveRequest, RemoveTask faled with error: %v\n", err)
 		return err
