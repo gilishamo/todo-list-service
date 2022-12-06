@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	_ "todo-list-service/docs/ToDoListService"
-	"todo-list-service/task"
+
+	_ "github.com/gilishamo/todo-list-service/docs/ToDoListService"
+	"github.com/gilishamo/todo-list-service/task"
 
 	"github.com/gilishamo/go-codebase/http_utils"
 

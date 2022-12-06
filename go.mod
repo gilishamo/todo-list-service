@@ -1,4 +1,4 @@
-module todo-list-service
+module github.com/gilishamo/todo-list-service
 
 go 1.19
 
