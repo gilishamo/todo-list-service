@@ -1,0 +1,69 @@
+definitions:
+  task.TaskData:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /create_task:
+    post:
+      consumes:
+      - application/json
+      description: Create a task and add it to the todo list.
+      parameters:
+      - description: Task's title and description
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/task.TaskData'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Created a task successfully
+          schema:
+            type: string
+      tags:
+      - root
+  /get_all_tasks:
+    get:
+      consumes:
+      - '*/*'
+      description: List all the items in the todo list.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/task.TaskData'
+            type: array
+      tags:
+      - root
+  /remove_task/{id}:
+    get:
+      consumes:
+      - '*/*'
+      description: Remove a task from the todo list.
+      parameters:
+      - description: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Removed task {id} successfully
+          schema:
+            type: string
+      tags:
+      - root
+swagger: "2.0"
