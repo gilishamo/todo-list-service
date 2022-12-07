@@ -34,9 +34,8 @@ When `createing a task`, a uuid is generated and the task is inserted to the map
 Similarly, when `removeing a task`, the task is removed from the map, and the service that recived the request send an inner request to the other service/services with the id of the task to remove.
 
 Notes:
-* Data structure to hold all tasks - Each service instance holds a map, each map item consists of (key, value) = (id, task data).
+* Data structure to hold all tasks - Each service instance holds a map, each map item consists of (key, value) = (id, task data). I chose to use a map in order to implement add/remove of a task in O(1) time in average. 
 * Add/Remove - When a user send a request to add/remove a task, the service uses an inner request in order to inform the other service instances about the change.
-I chose to use a map in order to implement add/remove of a task in O(1) time in average. 
 * Task id - because the title/description are not unique, I decided to generate a uuid for each task created,
 * Removeing a task - currently, in order to remove a task, the user first need to list all tasks, then extract the id of the relevant task, and finally create a request to remove the task with the relvant id. I could have made this proccess a 'black box' if i created the UI myself. For example, I could create a page that listed all tasks, each html element representing a task would hold the id of the task and a 'delete' button. When clicking 'delete' the ui would create a request to the server with the correct id.
 * Scalability - each service instance must have the addresses of other service instances at initializtion. I would have liked to add an option to add services as needed without having to re-start all the services. This would also mean I would need to add a request to inform the new service of the current state of the tasks list. 
